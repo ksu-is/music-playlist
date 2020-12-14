@@ -1,0 +1,203 @@
+import tkinter as tk
+
+from tkinter import messagebox
+
+# The Song class
+class Song:
+    # Defines the Song class
+    def __init__(self, name, artist):
+        self.name = name
+        self.artist = artist
+        
+    # Prints the Name of the Song
+    def getName(self):
+        print(self.name)
+        return self.name
+        
+    # Prints the Artist of the Song
+    def getArtist(self):
+        print(self.artist)
+        return self.artist
+        
+    # Prints the details about the Song
+    def getDetails(self):
+        print(self.name, "by", self.artist)
+        string = self.name + " by " + self.artist
+        return string
+        
+# The Playlist class
+class Playlist:
+    # Defines the Playlist class
+    # songList is the variable that holds the Playlist of Songs
+    def __init__(self, name):
+        self.name = name
+        self.songList = []
+        
+    # Adds a Song to the Playlist (songList)
+    def addSong(self, song):
+        self.songList.append(song)
+        
+    # Removes a Song from the Playlist (songList) 
+    def removeSong(self, name):
+        for p in self.songList:
+            if p.name == name:
+                self.songList.remove(p)
+    
+    # Clears all of the Songs from the Playlist (songList)
+    def clearList(self):
+        self.songList.clear()
+        
+    # Prints the Name of the Playlist
+    def getName(self):
+        print(self.name,"\n")
+        return self.name
+        
+    # Sets the Name of the Playlist
+    def setName(self, name):
+        self.name = name
+    
+    # Prints the list of Songs in the Playlist
+    def getList(self):
+        # Checks first to see if the Playlist is empty before printing
+        if len(self.songList) > 0:
+            for j in self.songList:
+                j.getDetails()
+        else:
+            print("This playlist is empty, try adding some songs!\n")
+
+            
+############################################################################
+#   GUI CODE: AKA THE WINDOWS THAT DISPLAY EVERYTHING
+############################################################################
+        
+# This is an example list of songs that you can add to playlists
+songs = [Song("Positions", "Ariana Grande"), Song("Laugh Now Cry Later", "Drake"), Song("Holy", "Justin Bieber"), Song("Blinding Lights", "The Weeknd"), Song("Therefore I Am", "Billie Eilish"), Song("Body", "Megan Thee Stallion"), Song("Whats Poppin", "Jack Harlow"), Song("Holiday", "Lil Nas X"), Song("B.S.", "Jhene Aiko"), Song("Tyler Herro", "Jack Harlow")]
+
+# Root is the name of the main GUI window
+root = tk.Tk()
+
+label = tk.Label(root, text="Available Songs", width = 30)
+
+# This is where the list of available songs is listed
+global songsList
+songsList = tk.Listbox(root, height=20, width=30)
+ind = 1
+for k in songs:
+    songsList.insert(ind, k.getDetails())
+    ind = ind + 1
+# END of listing available songs
+
+# This is the method that creates a new playlist and shows it in the GUI with all the features
+def newPlaylistCallBack():
+    global myPlaylist
+    myPlaylist = Playlist("New Playlist")
+    playlistLabel = tk.Label(root, text=myPlaylist.getName(), width = 30)
+    playlistLabel.place(x=150,y=20)
+    playlistSongs = tk.Listbox(root, height=20, width=30)
+
+    # This loop displays all of the songs currently in the playlist
+    ind = 1
+    for p in myPlaylist.songList:
+        playlistSongs.insert(ind, p.getDetails())
+
+    playlistSongs.place(x=200,y=50)
+
+    # This method adds a song to the playlist
+    def addSong():
+        global myPlaylist
+        global playlistSongs
+        details = songsList.get(songsList.curselection())
+        for u in songs:
+            if u.getDetails() == details:
+                myPlaylist.addSong(u)
+        playlistSongs = tk.Listbox(root, height=20, width=30)
+        ind = 1
+        for p in myPlaylist.songList:
+            playlistSongs.insert(ind, p.getDetails())
+
+        playlistSongs.place(x=200,y=50)
+    # END of method that adds a song
+
+    # This method removes a song from the playlist
+    def removeSong():
+        global playlistSongs
+        details = playlistSongs.get(playlistSongs.curselection())
+        for u in myPlaylist.songList:
+            if u.getDetails() == details:
+                myPlaylist.removeSong(u.getName())
+        playlistSongs = tk.Listbox(root, height=20, width=30)
+        ind = 1
+        for p in myPlaylist.songList:
+            playlistSongs.insert(ind, p.getDetails())
+
+        playlistSongs.place(x=200,y=50)
+    # END of method that removes a song
+    
+    tk.messagebox.showinfo("Making New Playlist", "Select a song then click add. When you're finished click stop.")
+
+    # These are the "Add New Song" and "Remove Song" buttons. These lines just make the buttons
+    tk.Button(root, text="Add New Song", command=addSong).place(x=20,y=150)
+    tk.Button(root, text="Remove Song", command=removeSong).place(x=20,y=200)
+    
+# END of method that creates the new playlist and its commands
+
+# This line makes the "Make New Playlist" button
+makePlaylistButt = tk.Button(root, text="Make New Playlist", command=newPlaylistCallBack)
+makePlaylistButt.place(x=20,y=50)
+
+label.place(x=350,y=20)
+songsList.place(x=400,y=50)
+
+# Size of the window
+root.geometry("600x400")
+
+# Title of the window
+root.title("Playlist Maker")
+
+root.mainloop()
+
+############################################################################
+#   END OF GUI
+############################################################################
+
+
+############################################################################
+#   TEST CODE BELOW SO YOU KNOW HOW TO USE IT
+############################################################################
+
+# This tests creating a Song
+#exampleSong = Song("The Cure", "J. Cole")
+#exampleSong.getName()
+#exampleSong.getArtist()
+#exampleSong.getDetails()
+#print("\n")
+
+# This is an example playlist
+#myPlaylist = Playlist("My First Playlist")
+#myPlaylist.getName()
+#myPlaylist.getList()
+
+# Tests adding a song one by one
+#myPlaylist.addSong(Song("Water", "Ugly God"))
+#myPlaylist.getList()
+#print("\n")
+
+# Tests adding all the songs to the playlist using a loop
+#for i in songs:
+    #myPlaylist.addSong(i)
+#myPlaylist.getList()
+#print("\n")
+
+# Tests removing a song from the playlist
+#myPlaylist.removeSong("Holy")
+#myPlaylist.getList()
+#print("\n")
+
+# Tests clearing the playlist of songs
+#myPlaylist.clearList()
+#myPlaylist.getList()
+#print("\n")
+
+# Tests changing the name of the playlist
+#myPlaylist.setName("My Empty Playlist")
+#myPlaylist.getName()
